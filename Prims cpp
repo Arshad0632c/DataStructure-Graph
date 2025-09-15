@@ -1,0 +1,68 @@
+
+SOURCE CODE:
+
+#include <iostream>
+#include <climits>  // for INT_MAX
+using namespace std;
+
+const int MAX = 10;
+int cost[MAX][MAX];
+int visited[MAX] = {0};
+
+void Graph_Matrix(int n);
+void Prims(int n);
+
+int main() {
+    int n;
+    cout << "Enter the number of vertices: ";
+    cin >> n;
+
+    Graph_Matrix(n);
+    Prims(n);
+
+    return 0;
+}
+
+void Graph_Matrix(int n) {
+    cout << "Enter the adjacency matrix (0 for no edge):\n";
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            cin >> cost[i][j];
+            if (cost[i][j] == 0 && i != j)
+                cost[i][j] = INT_MAX;  // No self-loops or disconnected edges
+        }
+    }
+}
+
+void Prims(int n) {
+    int a, b, i, j, ne = 1, mincost = 0;
+    visited[1] = 1; // Start from vertex 1
+
+    cout << "\nEdges in the Minimum Spanning Tree:\n";
+    while (ne < n) {
+        int min = INT_MAX;
+        for (i = 1; i <= n; ++i) {
+            if (visited[i]) {
+                for (j = 1; j <= n; ++j) {
+                    if (!visited[j] && cost[i][j] < min) {
+                        min = cost[i][j];
+                        a = i;
+                        b = j;
+                    }
+                }
+            }
+        }
+
+        if (!visited[b]) {
+            cout << "Edge " << ne << ": (" << a << ", " << b << ") cost: " << min << endl;
+            mincost += min;
+            visited[b] = 1;
+            ++ne;
+        }
+
+        cost[a][b] = cost[b][a] = INT_MAX; // Mark edge as used
+    }
+
+    cout << "Minimum cost = " << mincost << endl;
+}
+
